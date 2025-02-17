@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rateio de Gastos no Bar</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        .button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        .button:hover {
+            background-color: #45a049;
+        }
+        .button.clear {
+            background-color: #f44336;
+        }
+        .button.clear:hover {
+            background-color: #d32f2f;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Rateio de Gastos no Bar</h1>
+    
+    <div id="items">
+        <div class="input-group">
+            <label for="item1">Item 1:</label>
+            <input type="text" id="item1" placeholder="Nome do item (ex: Cerveja Heineken)">
+        </div>
+        <div class="input-group">
+            <label for="quantity1">Quantidade:</label>
+            <input type="number" id="quantity1" placeholder="Quantidade (ex: 2)" min="1" value="1">
+        </div>
+        <div class="input-group">
+            <label for="price1">Preço Unitário:</label>
+            <input type="number" id="price1" placeholder="Preço do item (ex: 10.00)" step="0.01">
+        </div>
+    </div>
+
+    <button class="button" onclick="addItem()">Adicionar Item</button>
+
+    <div class="input-group">
+        <label for="people">Quantidade de Pessoas:</label>
+        <input type="number" id="people" placeholder="Número de pessoas" min="1">
+    </div>
+
+    <button class="button" onclick="calculate()">Calcular Rateio</button>
+    <button class="button clear" onclick="clearAll()">Limpar Tudo</button>
+
+    <div class="result" id="result"></div>
+</div>
+
+<script>
+    let itemCount = 1;
+
+    function addItem() {
+        itemCount++;
+        const itemsDiv = document.getElementById('items');
+        const newItem = document.createElement('div');
+        newItem.innerHTML = `
+            <div class="input-group">
+                <label for="item${itemCount}">Item ${itemCount}:</label>
+                <input type="text" id="item${itemCount}" placeholder="Nome do item (ex: Guaraná)">
+            </div>
+            <div class="input-group">
+                <label for="quantity${itemCount}">Quantidade:</label>
+                <input type="number" id="quantity${itemCount}" placeholder="Quantidade (ex: 3)" min="1" value="1">
+            </div>
+            <div class="input-group">
+                <label for="price${itemCount}">Preço Unitário:</label>
+                <input type="number" id="price${itemCount}" placeholder="Preço do item (ex: 5.00)" step="0.01">
+            </div>
+        `;
+        itemsDiv.appendChild(newItem);
+    }
+
+    function calculate() {
+        let total = 0;
+        for (let i = 1; i <= itemCount; i++) {
+            const quantity = parseFloat(document.getElementById(`quantity${i}`).value);
+            const price = parseFloat(document.getElementById(`price${i}`).value);
+            if (!isNaN(quantity) && !isNaN(price)) {
+                total += quantity * price;
+            }
+        }
+
+        const people = parseInt(document.getElementById('people').value);
+        if (isNaN(people) || people < 1) {
+            alert("Por favor, insira um número válido de pessoas.");
+            return;
+        }
+
+        const perPerson = total / people;
+        document.getElementById('result').innerHTML = `
+            <strong>Total Gasto:</strong> R$ ${total.toFixed(2)}<br>
+            <strong>Rateio por Pessoa:</strong> R$ ${perPerson.toFixed(2)}
+        `;
+    }
+
+    function clearAll() {
+        itemCount = 1;
+        const itemsDiv = document.getElementById('items');
+        itemsDiv.innerHTML = `
+            <div class="input-group">
+                <label for="item1">Item 1:</label>
+                <input type="text" id="item1" placeholder="Nome do item (ex: Cerveja Heineken)">
+            </div>
+            <div class="input-group">
+                <label for="quantity1">Quantidade:</label>
+                <input type="number" id="quantity1" placeholder="Quantidade (ex: 2)" min="1" value="1">
+            </div>
+            <div class="input-group">
+                <label for="price1">Preço Unitário:</label>
+                <input type="number" id="price1" placeholder="Preço do item (ex: 10.00)" step="0.01">
+            </div>
+        `;
+        document.getElementById('people').value = '';
+        document.getElementById('result').innerHTML = '';
+    }
+</script>
+
+</body>
+</html>
